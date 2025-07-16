@@ -4,16 +4,17 @@
 
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
+
 const config = {
-  gridSize: 7,
-  timeSteps: 300,
-  sceneColor: 0xaaaaaa,
-  accentBlue: 0x2244aa,
-  snakeColor: 0x227722,
-  humanColor: 0xbbbbbb,
-  snakeTurns: 4,
-  snakeRadius: 0.5,
-  crossSize: 2
+  gridSize: 75,          // Ising lattice size (7×7)
+  timeSteps: 500,       // Frames in pseudo-Ising tensor
+  sceneColor: 0xaaaaaa, // Iron/silver
+  accentBlue: 0x2244aa, // Background tint
+  snakeColor: 0x227722, // Green snake
+  humanColor: 0xbbbbbb, // Silver human
+  snakeTurns: 5.2,        // Number of coils
+  snakeRadius: 0.6,     // Coil radius
+  crossSize: 3.2          // Half-height of vertical beam
 };
 
 // -------------------------------------------------- Ising (same as REV-B)
