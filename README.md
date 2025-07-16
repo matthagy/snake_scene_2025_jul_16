@@ -3,7 +3,7 @@
 A lightweight **THREE.js** demo that visualises a silver-hued “Abe” figure carrying an iron cross while a green snake coils dynamically around it.  
 The snake’s slither speed is driven by a tiny pseudo-Ising 4-D tensor, giving a subtle, non-repeating motion without any heavyweight physics libs.
 
-![Screenshot](docs/screenshot.png)
+![Screenshot](./screenshot.png)
 
 ---
 
