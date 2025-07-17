@@ -5,7 +5,7 @@ The snake’s slither speed is driven by a tiny pseudo-Ising 4-D tensor, giving 
 
 ![Screenshot](./screenshot.png)
 
-Animation at [[https://www.youtube.com/watch?v=Y_qkkuHYjdk](https://youtube.com/shorts/cF-nQvRbmKM) ](https://www.youtube.com/shorts/4dhOcSGe-k4)(evolving daily for now)
+Animation at [https://www.youtube.com/shorts/4dhOcSGe-k4](https://www.youtube.com/shorts/4dhOcSGe-k4) (evolving daily for now)
 
 ---
 
