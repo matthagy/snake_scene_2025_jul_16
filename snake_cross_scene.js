@@ -3,12 +3,12 @@
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
 const cfg = {
-  grid: 12,
+  grid: 1,
   steps: 51,
   sceneColor: 0xbbaabb,
   accentBlue: 0x2244aa,
   snakeTurns: 0.72,
-  snakeRadius: 0.9,
+  snakeRadius: 0.1,
   crossHalf: 3.7
 };
 
@@ -65,39 +65,36 @@ const createCross = () => {
   return g;
 };
 
-/* rattlesnake */
+/* --- snake: single-tone green ------------------------------------------ */
 const createSnake = () => {
   const pts = [], L = cfg.crossHalf * 2;
   for (let i = 0; i <= 200; i++) {
-    const t = i / 200, y = t * L - L / 2, a = t * cfg.snakeTurns * 2 * Math.PI;
-    pts.push(new THREE.Vector3(Math.cos(a) * cfg.snakeRadius, y, Math.sin(a) * cfg.snakeRadius));
+    const t = i / 200,
+          y = t * L - L / 2,
+          a = t * cfg.snakeTurns * 2 * Math.PI;
+    pts.push(new THREE.Vector3(
+      Math.cos(a) * cfg.snakeRadius,
+      y,
+      Math.sin(a) * cfg.snakeRadius
+    ));
   }
+
   const curve = new THREE.CatmullRomCurve3(pts);
-  const tube = new THREE.TubeGeometry(curve, 400, 0.12, 8, false);
-
-  /* vertex-color stripes */
-  const colors = [];
-  const stripe = 40;
-  for (let i = 0; i < tube.attributes.position.count; i++) {
-    const col = new THREE.Color(PAL[Math.floor(i / stripe) % PAL.length]);
-    colors.push(col.r, col.g, col.b);
-  }
-  tube.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-
   const body = new THREE.Mesh(
-    tube,
-    new THREE.MeshStandardMaterial({ vertexColors: true, metalness: 0.2, roughness: 0.9 })
+    new THREE.TubeGeometry(curve, 400, 0.12, 8, false),
+    /* 💚 plain green material */
+    new THREE.MeshStandardMaterial({ color: 0x15992a, metalness: 0.2, roughness: 0.9 })
   );
 
   const head = new THREE.Mesh(
     new THREE.SphereGeometry(0.22, 12, 12),
-    metal(PAL[0], 0.3, 0.4)
+    new THREE.MeshStandardMaterial({ color: 0x15992a, metalness: 0.3, roughness: 0.4 })
   );
   head.position.copy(pts[0]).add(new THREE.Vector3(0, 0, 0.12));
 
   const g = new THREE.Group();
   g.add(body, head);
-  g.userData.head = head;
+  g.userData.head = head;          // keep the bob animation working
   return g;
 };
 
