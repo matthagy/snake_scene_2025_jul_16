@@ -1,20 +1,23 @@
-/* snake_cross_scene.js (REV-E) — single-file, rattlesnake palette */
+/* snake_cross_scene.js (REV‑F) — single‑file, rattlesnake palette
+   Adds a "quantum‑team" of miniature humans orbiting the snake’s head. */
 
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
+/* ─── config ─── */
 const cfg = {
-  grid: 1,
-  steps: 51,
-  sceneColor: 0xbbaabb,
-  accentBlue: 0x2244aa,
-  snakeTurns: 0.72,
-  snakeRadius: 0.1,
-  crossHalf: 3.7
+  grid: 3,
+  steps: 9,
+  sceneColor: 0xbb2200,
+  accentBlue: 0x220099,
+  snakeTurns: 78.9,
+  snakeRadius: 4.3,
+  crossHalf: 1.3,
+  teamSize: 4.3            // ← quantum‑like team members
 };
 
 const PAL = [0xff375f, 0x34c759, 0x0a84ff, 0xffd60a]; // red / green / blue / yellow
 
-/* ――― Ising noise (unchanged) ――― */
+/* ─── Ising noise (unchanged) ─── */
 const ising = [...Array(cfg.grid)].map(() =>
   [...Array(cfg.grid)].map(() =>
     [...Array(cfg.steps)].map(() => ([
@@ -32,7 +35,7 @@ const magnetization = t => {
   return s / N;
 };
 
-/* ――― three.js boilerplate ――― */
+/* ─── three.js boilerplate ─── */
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(cfg.accentBlue).convertSRGBToLinear();
 
@@ -51,7 +54,7 @@ const dir = new THREE.DirectionalLight(0xffffff, 1.2);
 dir.position.set(5, 10, 7);
 scene.add(dir);
 
-/* ――― helpers ――― */
+/* ─── helpers ─── */
 const metal = (c, m = 0.9, r = 0.25) =>
   new THREE.MeshStandardMaterial({ color: c, metalness: m, roughness: r });
 
@@ -65,7 +68,7 @@ const createCross = () => {
   return g;
 };
 
-/* --- snake: single-tone green ------------------------------------------ */
+/* snake: single‑tone green */
 const createSnake = () => {
   const pts = [], L = cfg.crossHalf * 2;
   for (let i = 0; i <= 200; i++) {
@@ -82,7 +85,6 @@ const createSnake = () => {
   const curve = new THREE.CatmullRomCurve3(pts);
   const body = new THREE.Mesh(
     new THREE.TubeGeometry(curve, 400, 0.12, 8, false),
-    /* 💚 plain green material */
     new THREE.MeshStandardMaterial({ color: 0x15992a, metalness: 0.2, roughness: 0.9 })
   );
 
@@ -94,11 +96,11 @@ const createSnake = () => {
 
   const g = new THREE.Group();
   g.add(body, head);
-  g.userData.head = head;          // keep the bob animation working
+  g.userData.head = head; // expose head
   return g;
 };
 
-/* human (Opt-1, head tinted red) */
+/* human (Opt‑1, head tinted red) */
 const createHuman = () => {
   const g = new THREE.Group();
   const skin = metal(0xbfa27c, 0.1, 0.5);
@@ -124,6 +126,20 @@ const createHuman = () => {
   return g;
 };
 
+/* quantum‑team: miniature humans orbiting a point */
+const createTechTeam = (n = cfg.teamSize) => {
+  const group = new THREE.Group();
+  for (let i = 0; i < n; i++) {
+    const member = createHuman();
+    const angle = (i / n) * 2 * Math.PI;
+    const radius = 0.6; // orbit radius around head
+    member.scale.set(0.25, 0.25, 0.25); // shrink
+    member.position.set(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
+    group.add(member);
+  }
+  return group;
+};
+
 /* assemble */
 const human = createHuman();
 scene.add(human);
@@ -135,6 +151,16 @@ human.add(cross);
 
 const snake = createSnake();
 cross.add(snake);
+
+// attach quantum team to the snake’s head
+afterSnakeSetup();
+function afterSnakeSetup () {
+  const head = snake.userData.head;
+  const techTeam = createTechTeam();
+  techTeam.position.y = 0.3; // hover just above head surface
+  head.add(techTeam);
+  head.userData.techTeam = techTeam;
+}
 
 /* resize + animate */
 addEventListener('resize', () => {
@@ -152,7 +178,12 @@ let frame = 0;
   human.rotation.y += 0.003;
 
   const head = snake.userData.head;
-  if (head) head.position.y += Math.sin(frame * 0.12) * 0.005;
+  if (head) {
+    head.position.y += Math.sin(frame * 0.12) * 0.005;
+    // slow orbital spin for the tech team
+    const team = head.userData.techTeam;
+    if (team) team.rotation.y -= 0.02;
+  }
 
   renderer.render(scene, camera);
   frame++;
