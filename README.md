@@ -18,11 +18,13 @@ Animation at [https://www.youtube.com/shorts/4dhOcSGe-k4](https://www.youtube.co
 
 ## 📂 Project layout
 
+```
 .
 ├─ index.html            # Minimal launcher
 ├─ snake_cross_scene.js  # All scene logic (<200 LOC)
 └─ docs/
 └─ screenshot.png     # Optional: grab your own
+```
 
 ---
 
